@@ -6,9 +6,10 @@ use App\ {
     Topic,
     Repositories\Contracts\TopicRepository,
     Repositories\Eloquent\Criteria\LatestFirst,
-    Repositories\Eloquent\Criteria\ByUser
+    Repositories\Eloquent\Criteria\ByUser,
+    Repositories\Eloquent\Criteria\EagerLoad
 };
-use App\Repositories\Eloquent\Criteria\EagerLoad;
+
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
@@ -22,6 +23,11 @@ class TopicController extends Controller
         $this->topics = $topics;
     }
 
+    /**
+     * Get all topics 
+     *
+     * @return void
+     */
     public function index()
     {
         $topics = $this->topics->withCriteria([
@@ -31,6 +37,15 @@ class TopicController extends Controller
         return view('topics.index', compact('topics'));
     }
 
+    public function show($slug)
+    {    
+        $topic = $this->topics->withCriteria([
+            new EagerLoad(['posts.user']),
+        ])->findBySlug($slug);
+        
+
+        return view('topics.show', compact('topic'));
+    }
     /**
      * display of the topics add page
      *

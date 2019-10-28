@@ -15,7 +15,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 //Route::get('/topics', 'TopicController@index');
-Route::resource('topics', 'TopicController');
+Route::resource('topics', 'TopicController', ['except' => 'show']);
+Route::get('/topics/{slig}', 'TopicController@show')->name('topics.show');
 
 Auth::routes();
 
