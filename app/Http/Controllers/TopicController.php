@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\ {
     Topic,
-    Repositories\Contracts\TopicRepository
+    Repositories\Contracts\TopicRepository,
+    Repositories\Eloquent\Criteria\LatestFirst,
+    Repositories\Eloquent\Criteria\ByUser
 };
 
 use Illuminate\Http\Request;
@@ -22,7 +24,9 @@ class TopicController extends Controller
 
     public function index()
     {
-        $topics = $this->topics->all();
+        $topics = $this->topics->withCriteria([
+            new LatestFirst()
+        ])->all();
         return view('topics.index', compact('topics'));
     }
 
@@ -81,5 +85,15 @@ class TopicController extends Controller
     {
         $this->topics->delete($topic);
         return redirect()->route('topics.index');
+    }
+
+    public function myTopics()
+    {
+        $topics = $this->topics->withCriteria([
+            new byUser(auth()->id()),
+            new LatestFirst(),
+        ])->all();
+
+        return view('topics.my-topics', compact('topics'));
     }
 }

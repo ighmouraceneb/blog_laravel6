@@ -20,3 +20,6 @@ Route::resource('topics', 'TopicController');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/my-topics', 'TopicController@myTopics')->name('topics.own');
+
+\Auth::loginUsingId(4);
