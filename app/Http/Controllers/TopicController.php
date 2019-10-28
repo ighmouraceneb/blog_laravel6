@@ -16,11 +16,70 @@ class TopicController extends Controller
 
     public function __construct(TopicRepository $topics)
     {
+        $this->middleware('auth');
         $this->topics = $topics;
     }
 
     public function index()
     {
-        return $this->topics->all();
+        $topics = $this->topics->all();
+        return view('topics.index', compact('topics'));
+    }
+
+    /**
+     * display of the topics add page
+     *
+     * @return void
+     */
+    public function create()
+    {
+        return view('topics.create');
+    }
+
+    /**
+     * create the new topic
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function store(Request $request)
+    {
+        $this->validate($request, ['title' => 'required|string']);
+
+        $this->topics->create([
+            'title' => $request->title,
+            'slug' =>str_slug($request->title),
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->route('topics.index');
+
+    }
+
+    public function edit($topic)
+    {
+        $topic = $this->topics->find($topic);
+
+        return view('topics.edit', compact('topic'));
+    }
+
+    public function update($topic, Request $request)
+    {
+        $this->validate($request, ['title' => 'required|string']);
+
+        $this->topics->update($topic, [
+            'title' => $request->title,
+            'slug' =>str_slug($request->title),
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->route('topics.index');
+       
+    }
+
+    public function destroy($topic)
+    {
+        $this->topics->delete($topic);
+        return redirect()->route('topics.index');
     }
 }
