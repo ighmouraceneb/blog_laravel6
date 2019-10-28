@@ -2,13 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Topic;
+use App\ {
+    Topic,
+    Repositories\Contracts\TopicRepository
+};
+
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
 {
+
+    protected $topics;
+
+    public function __construct(TopicRepository $topics)
+    {
+        $this->topics = $topics;
+    }
+
     public function index()
     {
-        return Topic::get();
+        return $this->topics->all();
     }
 }
