@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Contracts;
 
-
-interface TopicRepository
+class UserRepository 
 {
-   
+    
 }
+
