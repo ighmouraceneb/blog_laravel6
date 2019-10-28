@@ -14,6 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+//Route::get('/topics', 'TopicController@index');
+Route::resource('topics', 'TopicController');
 
 Auth::routes();
 
