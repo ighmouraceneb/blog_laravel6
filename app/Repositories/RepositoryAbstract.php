@@ -3,8 +3,9 @@
 namespace App\Repositories;
 
 use App\Repositories\Contracts\RepositoryInterface;
+use App\Repositories\Criteria\CriteriaInterface;
 
-abstract class RepositoryAbstract implements RepositoryInterface
+abstract class RepositoryAbstract implements RepositoryInterface, CriteriaInterface
 {
 
     protected $model;
@@ -106,5 +107,16 @@ abstract class RepositoryAbstract implements RepositoryInterface
         return $this->find($id)->delete($id);
     }
 
+    public function withCriteria(...$criteria)
+    {
+        $criteria = array_flatten($criteria);
+
+        foreach($criteria as $criterion) {
+
+            $this->model = $criterion->apply($this->model);
+        }
+
+        return $this;
+    }
 }
 
