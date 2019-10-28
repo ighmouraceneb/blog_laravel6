@@ -4,8 +4,7 @@
     <div class="">
         <h2>Liste des topics</h2>
         <a href="{{route('topics.create')}}" class="btn btn-info float-right" >Ajouter un nouveau topic</a>
-        @foreach($topics as $topic)
-            <h2><a href="{{route('topics.show', $topic->slug)}}">{{$topic->title}}</a></h2>
+            <h2>{{$topic->title}}</h2>
             <ul>
             @foreach($topic->posts as $post)
                 <li> <strong> {{$post->title}} </strong> <br>
@@ -13,7 +12,6 @@
                 </li>
             @endforeach
             </ul>
-        @endforeach
     </div>
 </div>
 @endsection

@@ -15,5 +15,15 @@ class EloquentTopicRepository extends RepositoryAbstract implements TopicReposit
     {
         return Topic::class; //'App\Topic'
     }
+/**
+ * find topic by slug
+ *
+ * @param [string] $slug
+ * @return void
+ */
+    public function findBySlug($slug)
+    {
+        return $this->findWhereFirst('slug', $slug);
+    }
 }
 

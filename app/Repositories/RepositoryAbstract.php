@@ -2,8 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Contracts\RepositoryInterface;
 use App\Repositories\Criteria\CriteriaInterface;
+use App\Repositories\Contracts\RepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 abstract class RepositoryAbstract implements RepositoryInterface, CriteriaInterface
 {
@@ -35,7 +36,7 @@ abstract class RepositoryAbstract implements RepositoryInterface, CriteriaInterf
      */
     public function find($id)
     {
-        return $this->model::find($id);
+        return $this->model::findOrfail($id);
     }
 
     /**
@@ -47,7 +48,11 @@ abstract class RepositoryAbstract implements RepositoryInterface, CriteriaInterf
      */
     public function findWhere($column, $value)
     {
-        return $this->model::where($column, $value)->get();
+        $model =   $this->model->where($column, $value)->get();
+        $this->ModelNotFound($model);
+        return $model;
+
+ 
     }
 
     /**
@@ -59,7 +64,11 @@ abstract class RepositoryAbstract implements RepositoryInterface, CriteriaInterf
      */
     public function findWhereFirst($column, $value)
     {
-        return $this->model::where($column, $value)->first();
+        $model =  $this->model->where($column, $value)->first();
+
+        $this->ModelNotFound($model);
+        return $model;
+
     }
 
     /**
@@ -70,7 +79,7 @@ abstract class RepositoryAbstract implements RepositoryInterface, CriteriaInterf
      */
     public function paginate($perpage)
     {
-        return $this->model->paginate($perpage);
+        return $this->model->paginate($perpage);       
     }
 
     /**
@@ -107,6 +116,12 @@ abstract class RepositoryAbstract implements RepositoryInterface, CriteriaInterf
         return $this->find($id)->delete($id);
     }
 
+   /**
+     * filter with criteria
+     *
+     * @param [array] $criteria
+     * @return object
+     */
     public function withCriteria(...$criteria)
     {
         $criteria = array_flatten($criteria);
@@ -117,6 +132,15 @@ abstract class RepositoryAbstract implements RepositoryInterface, CriteriaInterf
         }
 
         return $this;
+    }
+
+    private function ModelNotFound($model)
+    {
+        if(!$model) {
+            throw (new ModelNotFoundException)->setModel(
+                get_class($this->model->getModel()));
+        }
+        return $model;
     }
 }
 
