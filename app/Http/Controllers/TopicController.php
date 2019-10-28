@@ -8,7 +8,7 @@ use App\ {
     Repositories\Eloquent\Criteria\LatestFirst,
     Repositories\Eloquent\Criteria\ByUser
 };
-
+use App\Repositories\Eloquent\Criteria\EagerLoad;
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
@@ -25,7 +25,8 @@ class TopicController extends Controller
     public function index()
     {
         $topics = $this->topics->withCriteria([
-            new LatestFirst()
+            new LatestFirst(),
+            new EagerLoad(['posts', 'posts.user']),
         ])->all();
         return view('topics.index', compact('topics'));
     }
