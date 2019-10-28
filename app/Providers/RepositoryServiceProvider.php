@@ -26,5 +26,6 @@ class RepositoryServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->bind(TopicRepository::class, EloquentTopicRepository::class);
+        $this->app->bind(UserRepository::class, EloquentUserRepository::class);
     }
 }
